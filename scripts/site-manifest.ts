@@ -259,6 +259,21 @@ export function updaterForMirror(manifest: UpdaterManifest, tag: string, present
   return { ...manifest, platforms };
 }
 
+/**
+ * The same updater manifest, with the notes of the release it belongs to.
+ *
+ * Tauri writes its copy while the release is still a draft, so the notes in it
+ * are whatever the release workflow put there — for this project, the standing
+ * disclaimer. The release notes are written when the draft is published, after
+ * that file was made, so the app has to be told them separately: the release's
+ * own body is the only copy that is written once and read everywhere (the
+ * changelog page and the download page read the same text).
+ */
+export function withReleaseNotes(manifest: UpdaterManifest, body: string | null | undefined): UpdaterManifest {
+  const notes = (body ?? "").trim();
+  return notes ? { ...manifest, notes } : manifest;
+}
+
 /** Everything wrong with a changelog, as messages; empty means it is usable. */
 export function validateChangelog(c: unknown): string[] {
   const bad: string[] = [];

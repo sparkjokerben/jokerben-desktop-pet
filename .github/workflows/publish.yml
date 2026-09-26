@@ -76,7 +76,7 @@ jobs:
           gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
             | node scripts/make-manifest.ts changelog --stdin --out manifests/releases.json
           node scripts/make-manifest.ts update --tag "${{ steps.tag.outputs.name }}" \
-            --dir release-assets --out manifests/update.json
+            --dir release-assets --release-json release.json --out manifests/update.json
 
       - name: Upload the release's files
         run: |

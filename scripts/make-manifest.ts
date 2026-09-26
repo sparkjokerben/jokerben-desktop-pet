@@ -7,7 +7,7 @@
 //   gh api "repos/:owner/:repo/releases?per_page=100" \
 //     | node scripts/make-manifest.ts changelog --stdin --out manifests/releases.json
 //   node scripts/make-manifest.ts update --tag v0.1.0 --dir release-assets \
-//     --out manifests/update.json
+//     --release-json release.json --out manifests/update.json
 //
 // After a release, to refresh the copies compiled into the Worker (what the
 // site shows when the bucket cannot answer) — `npm run site:fallback`:
@@ -33,6 +33,7 @@ import {
   updaterForMirror,
   validateChangelog,
   validateManifest,
+  withReleaseNotes,
   type GithubRelease,
   type Manifest,
   type UpdaterManifest,
@@ -97,7 +98,13 @@ function update(): UpdaterManifest {
   const tag = required("tag");
   const dir = flag("dir") ?? "release-assets";
   const source = JSON.parse(readFileSync(flag("in") ?? join(dir, "latest.json"), "utf8")) as UpdaterManifest;
-  return updaterForMirror(source, tag, new Set(readdirSync(dir)));
+  const pointed = updaterForMirror(source, tag, new Set(readdirSync(dir)));
+  // Its own notes are the draft's, not the release's: the notes are written
+  // when the draft is published, which is after tauri-action made that file.
+  const releaseJson = flag("release-json");
+  if (!releaseJson) return pointed;
+  const release = JSON.parse(readFileSync(releaseJson, "utf8")) as { body?: string | null };
+  return withReleaseNotes(pointed, release.body);
 }
 
 /** The releases API's answer, from `--releases-json` or piped in with `--stdin`. */

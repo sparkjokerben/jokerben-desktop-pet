@@ -13,6 +13,7 @@ import {
   updaterForMirror,
   validateChangelog,
   validateManifest,
+  withReleaseNotes,
   type GithubRelease,
   type UpdaterManifest,
 } from "./site-manifest.ts";
@@ -219,5 +220,17 @@ describe("the updater manifest the mirror serves", () => {
 
   it("refuses an empty manifest", () => {
     expect(() => updaterForMirror({ ...tauri(), platforms: {} }, "v0.1.0", present)).toThrow(/no platforms/);
+  });
+
+  it("takes the notes from the release, not from the draft's own manifest", () => {
+    // Tauri makes its copy while the release is a draft, so the notes in it are
+    // the workflow's standing text; the release notes are written when it is
+    // published. The app shows whatever this says.
+    const pointed = updaterForMirror(tauri(), "v0.1.0", present);
+    const out = withReleaseNotes(pointed, "\nFixed things.\n\n- one\n");
+    expect(out.notes).toBe("Fixed things.\n\n- one");
+    expect(out.platforms).toEqual(pointed.platforms);
+    // A release with no notes of its own keeps what the manifest carried.
+    expect(withReleaseNotes(pointed, "   \n ").notes).toBe("notes");
   });
 });
