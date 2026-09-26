@@ -11,6 +11,40 @@ the fuller entries elsewhere:
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] — 2026-09-27
+
+### Fixed
+
+- **The material on Windows is the acrylic, in a window of its own.** The switch
+  that appeared as "Liquid Glass" on Windows put a blur behind a region of the
+  pet's own window: a rectangle cut out of the pet's window, which followed the
+  pet badly and had nothing to say about what it was covering. It is the acrylic
+  now — the material that shows what is under it through — in a window of its
+  own, cut to the card's rounded shape and kept directly under the pet. Windows
+  10 1803 and later, and the switch is named for the material the system
+  actually has: Acrylic on Windows, Liquid Glass on macOS 26 and vibrancy before
+  it.
+- **The card is drawn from what is behind it.** The material shows the desktop
+  through, so the panel is drawn from what is under it rather than from the
+  system's light or dark — which is what put dark ink over a dark desktop
+  whenever the system was light, and a grey of its own that washed out wherever
+  the desktop was neither dark nor pale. It reads the desktop now: dark ink over
+  a pale one, light ink over a dark one, every word on the card in that one ink,
+  and a little of the card's own colour where the desktop is too mixed to read
+  against. A reading drifts into the next rather than stepping, the ink changes
+  hands once and fades across, and a card that is taken away comes back in the
+  colour it went down in instead of reading the desktop afresh and correcting
+  itself in front of you. macOS keeps the material, and the card, it has always
+  had.
+- **The material goes where the pet goes.** It is a window of its own, so it has
+  to be told: it follows the pet through a drag, stays with the cursor while the
+  right-click menu holds the thread the page would have said so on, and goes
+  away with the pet when the pet is hidden.
+
+### Changed
+
+- **The panel tint starts at 0** — the bare material — on every platform.
+
 ## [0.3.1] — 2026-09-25
 
 ### Fixed
@@ -134,6 +168,7 @@ the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   the tray; milestones; a stats window with a trend and a keyboard heatmap; and
   an interface in English and Simplified Chinese.
 
+[0.3.2]: https://github.com/sparkjokerben/jokbet/releases/tag/v0.3.2
 [0.3.1]: https://github.com/sparkjokerben/jokbet/releases/tag/v0.3.1
 [0.3.0]: https://github.com/sparkjokerben/jokbet/releases/tag/v0.3.0
 [0.2.0]: https://github.com/sparkjokerben/jokbet/releases/tag/v0.2.0
