@@ -50,6 +50,7 @@ const T = {
     copied: "已复制",
     copy: "复制",
     installLine: "推荐：一行命令安装",
+    or: "或者",
     blocked1: "只拦 1 次",
     blocked2: "拦 2 次",
     releases: "去 GitHub 下载",
@@ -88,6 +89,7 @@ const T = {
     copied: "Copied",
     copy: "Copy",
     installLine: "Recommended: one line",
+    or: "or",
     blocked1: "1 block",
     blocked2: "2 blocks",
     releases: "Downloads on GitHub",
@@ -391,7 +393,11 @@ function renderCta() {
   copy.type = "button";
   copy.setAttribute("data-copy", "cta-command");
   command.append(pre, copy);
-  cta.append(hint, command);
+  // The line and the files under it are two ways to the same thing, so the
+  // page says so: a rule and a word, rather than one stacked on the other.
+  const or = el("p", t.or);
+  or.className = "or";
+  cta.append(hint, command, or);
 
   const ids = pick === "macos-aarch64" && manifest.files?.["macos-x64"] ? ["macos-aarch64", "macos-x64"] : [pick];
   ids.forEach((id, index) => {

@@ -21,7 +21,11 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(/assets/fonts/silkscreen-700.woff2) format("woff2");
+  /* The family is drawn on a pixel grid with one weight of it, and a smeared
+     one is not a heavier pixel face — it is a face with its pixels blurred into
+     each other. So a heading that asks for bold is given the same drawing, and
+     only the text that falls back to a system face (the Chinese) is bold. */
+  src: url(/assets/fonts/silkscreen-400.woff2) format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -345,6 +349,25 @@ html[data-lang="en"] [data-lang="zh"] {
 .cta .command {
   flex: 1 1 100%;
   margin: 0;
+}
+
+/* The line above and the files below are two ways to the same thing: this is
+   the word between them, with a hairline either side of it. */
+.cta .or {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--ink-mute);
+  font: 400 12px/1 var(--display);
+}
+
+.cta .or::before,
+.cta .or::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--line);
 }
 
 .try {
