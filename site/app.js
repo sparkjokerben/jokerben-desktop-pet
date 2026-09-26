@@ -48,6 +48,8 @@ const T = {
     primary: { "macos-aarch64": "下载 macOS 版", "windows-x64": "下载 Windows 版", "linux-appimage": "下载 Linux 版" },
     altMac: "Intel 版",
     copied: "已复制",
+    copy: "复制",
+    installLine: "推荐：一行命令安装",
     blocked1: "只拦 1 次",
     blocked2: "拦 2 次",
     releases: "去 GitHub 下载",
@@ -84,6 +86,8 @@ const T = {
     primary: { "macos-aarch64": "Download for macOS", "windows-x64": "Download for Windows", "linux-appimage": "Download for Linux" },
     altMac: "Intel build",
     copied: "Copied",
+    copy: "Copy",
+    installLine: "Recommended: one line",
     blocked1: "1 block",
     blocked2: "2 blocks",
     releases: "Downloads on GitHub",
@@ -345,17 +349,24 @@ function renderFiles() {
   }
 }
 
-/** The home page's buttons: the build this visitor probably needs, and a way
- * to all of them. */
+/** The one-line installs, as `/install.sh` and `/install.ps1` are: the same two
+ * the download page leads with. The project would rather people install this
+ * way — a terminal download is not quarantined and not marked, so neither
+ * Gatekeeper nor SmartScreen stops the first launch — so the home page offers
+ * the line for the visitor's own system first, and the file under it. */
+const UNIX_INSTALL = "curl -fsSL https://jokbet.jokerben.top/install.sh | sh";
+const WINDOWS_INSTALL = "irm https://jokbet.jokerben.top/install.ps1 | iex";
+
+/** The home page's call to action: the one-line install, and the installers. */
 function renderCta() {
   const cta = $("cta");
   if (!cta || !manifest) return;
   const t = T[lang()];
-  cta.replaceChildren();
+  const more = $("cta-more");
   const hasFiles = !!manifest.version && Object.keys(manifest.files ?? {}).length > 0;
   const pick = guess();
-  const mac = $("cta-mac");
-  if (mac) mac.hidden = pick !== "macos-aarch64";
+  cta.replaceChildren();
+  if (more) more.hidden = true;
   const file = pick ? manifest.files?.[offered(pick)] : undefined;
   if (!pick || !file) {
     // Nothing to guess from: the download page lists every platform, or, with
@@ -366,12 +377,28 @@ function renderCta() {
     cta.append(link);
     return;
   }
+
+  const hint = el("p", t.installLine);
+  hint.className = "note";
+  const command = el("div");
+  command.className = "command";
+  const pre = el("pre");
+  const code = el("code", pick === "windows-x64" ? WINDOWS_INSTALL : UNIX_INSTALL);
+  code.id = "cta-command";
+  pre.append(code);
+  const copy = el("button", t.copy);
+  copy.className = "btn";
+  copy.type = "button";
+  copy.setAttribute("data-copy", "cta-command");
+  command.append(pre, copy);
+  cta.append(hint, command);
+
   const ids = pick === "macos-aarch64" && manifest.files?.["macos-x64"] ? ["macos-aarch64", "macos-x64"] : [pick];
   ids.forEach((id, index) => {
     const f = manifest?.files?.[offered(id)];
     if (!f) return;
     const link = el("a", index === 0 ? /** @type {Record<string, string>} */ (t.primary)[id] ?? id : t.altMac);
-    link.className = index === 0 ? "btn btn-primary" : "btn";
+    link.className = "btn";
     link.href = latestHref(f);
     link.setAttribute("download", "");
     link.dataset.platform = offered(id);
@@ -380,6 +407,9 @@ function renderCta() {
     if (f.size) link.append(size);
     cta.append(link);
   });
+  if (more) more.hidden = false;
+  // The buttons were just built: the copy button among them needs its wiring.
+  wireCopy();
 }
 
 /** The line under the buttons: which version, and what it runs on. */
@@ -577,6 +607,11 @@ function setLang(next, chosen = false) {
 /** A button with data-copy="<id>" copies that element's text, and says so. */
 function wireCopy() {
   for (const button of document.querySelectorAll("[data-copy]")) {
+    // The home page builds its copy button again on every render: wiring the
+    // ones already wired would copy twice per click.
+    const element = /** @type {HTMLElement} */ (button);
+    if (element.dataset.copyWired) continue;
+    element.dataset.copyWired = "1";
     const source = $(button.getAttribute("data-copy") ?? "");
     if (!source || !navigator.clipboard) {
       // Nothing to copy with: the text can still be selected by hand.

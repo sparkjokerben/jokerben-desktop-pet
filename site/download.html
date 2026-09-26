@@ -26,12 +26,12 @@
     <script type="module" src="/app.js"></script>
     <!-- /partial:head -->
     <title>下载 — Jokbet · Download</title>
-    <meta name="description" content="下载 Jokbet 最新版：macOS（Apple 芯片 / Intel）、Windows、Linux 的安装包，附 SHA-256 校验值，以及第一次打开时的放行步骤。" />
+    <meta name="description" content="安装 Jokbet 最新版：macOS、Linux、Windows 各一行命令（bash/zsh、PowerShell、cmd），或直接下载安装包，附 SHA-256 校验值。" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <link rel="canonical" href="https://jokbet.jokerben.top/download" />
     <meta property="og:url" content="https://jokbet.jokerben.top/download" />
     <meta property="og:title" content="下载 Jokbet" />
-    <meta property="og:description" content="macOS、Windows、Linux 安装包，附校验值和首次打开的步骤。" />
+    <meta property="og:description" content="一行命令安装 macOS、Linux、Windows 版；也可以直接下载安装包，附校验值。" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -92,78 +92,89 @@
             <span data-lang="en" lang="en">Download</span>
           </h1>
           <p class="lede">
-            <span data-lang="zh">当前版本的全部安装包，以及第一次打开时要做的事。</span>
-            <span data-lang="en" lang="en">Every installer of the current release, and what to do the first time you open it.</span>
+            <span data-lang="zh">推荐一行命令装好（它会核对校验值），也可以直接下载安装包。</span>
+            <span data-lang="en" lang="en">One line is the recommended way in — it checks the checksum — or take an installer directly.</span>
           </p>
-        </section>
-
-        <section class="block" id="installers">
-          <h2><span data-lang="zh">安装包</span><span data-lang="en" lang="en">Installers</span></h2>
-          <div class="release-head" id="release-head" hidden>
-            <span class="version" id="release-version"></span>
-            <span id="release-when"></span>
-            <span id="release-source"></span>
-            <a class="all" href="/changelog"
-              ><span data-lang="zh">所有版本</span><span data-lang="en" lang="en">All versions</span></a
-            >
-          </div>
-          <p class="empty" id="release-empty" aria-live="polite">
-            <span data-lang="zh">正在读取版本信息…</span>
-            <span data-lang="en" lang="en">Reading the current release…</span>
-          </p>
-          <ul class="files" id="files" hidden></ul>
-          <details id="notes-details" hidden>
-            <summary>
-              <span data-lang="zh">这次更新了什么</span><span data-lang="en" lang="en">What changed in this release</span>
-            </summary>
-            <div class="notes" id="notes"></div>
-          </details>
-          <p class="note">
-            <span data-lang="zh"
-              >安装包没有 Apple 或微软的签名，第一次打开时系统会拦一下，按下面的安装步骤放行即可；Mac 用终端一键安装就不会被拦。下载走本站的镜像，镜像不可用时自动改用
-              GitHub。</span
-            >
-            <span data-lang="en" lang="en"
-              >The builds are not signed by Apple or Microsoft, so your system stops the first launch once — unless, on a Mac, you
-              install from the terminal. Downloads come from this site's mirror, and fall back to GitHub when it is
-              unavailable.</span
-            >
-          </p>
-          <noscript>
-            <p class="note">
-              下载列表需要 JavaScript。安装包都在
-              <a href="https://github.com/sparkjokerben/jokbet/releases">GitHub Releases</a>。
-            </p>
-          </noscript>
         </section>
 
         <section class="block" id="install">
           <h2><span data-lang="zh">安装</span><span data-lang="en" lang="en">Install</span></h2>
+          <p class="lede">
+            <span data-lang="zh">下面任意一行都可以：脚本会读最新版本、核对 SHA-256，装好并打开。再运行一次同一行，就是更新到最新版。</span>
+            <span data-lang="en" lang="en"
+              >Any line below does the same: it reads the newest release, checks its SHA-256, installs it and opens it. Run the same line
+              again any time to update.</span
+            >
+          </p>
+
           <div class="oneliner">
-            <h3><span data-lang="zh">Mac 一键安装</span><span data-lang="en" lang="en">One line on a Mac</span></h3>
-            <p>
-              <span data-lang="zh">在「终端」里运行这一行：它装好最新版并打开，系统不会拦。以后再运行一次，就是更新到最新版。</span>
-              <span data-lang="en" lang="en"
-                >Run this in Terminal: it installs the newest release and opens it, and macOS does not stop it. Run it again any time
-                to update.</span
-              >
-            </p>
+            <h3>
+              <span data-lang="zh">macOS · Linux（bash / zsh）</span>
+              <span data-lang="en" lang="en">macOS · Linux (bash / zsh)</span>
+            </h3>
             <div class="command">
-              <pre><code id="install-command">curl -fsSL https://jokbet.jokerben.top/install.sh | sh</code></pre>
-              <button class="btn" type="button" data-copy="install-command">
+              <pre><code id="install-sh">curl -fsSL https://jokbet.jokerben.top/install.sh | sh</code></pre>
+              <button class="btn" type="button" data-copy="install-sh">
                 <span data-lang="zh">复制</span><span data-lang="en" lang="en">Copy</span>
               </button>
             </div>
             <p class="note">
               <span data-lang="zh"
-                >它下载的就是上面列出的 dmg，核对 SHA-256 后装进「应用程序」。运行前可以先<a href="/install.sh">看看脚本</a>。</span
+                >Mac 上装进「应用程序」，Linux 上装成 <code>~/.local/bin/jokbet</code>（AppImage，会自己更新）。从终端安装不带隔离标记，macOS
+                不会拦；脚本可以<a href="/install.sh">先读一遍</a>。</span
               >
               <span data-lang="en" lang="en"
-                >It downloads the disk image listed above, checks its SHA-256 and puts the app in Applications. You can
+                >On a Mac it goes into Applications; on Linux it becomes <code>~/.local/bin/jokbet</code> (the AppImage, which updates
+                itself). A terminal download carries no quarantine flag, so macOS does not stop it. You can
                 <a href="/install.sh">read the script</a> first.</span
               >
             </p>
           </div>
+
+          <div class="oneliner">
+            <h3>
+              <span data-lang="zh">Windows（PowerShell）</span>
+              <span data-lang="en" lang="en">Windows (PowerShell)</span>
+            </h3>
+            <div class="command">
+              <pre><code id="install-ps">irm https://jokbet.jokerben.top/install.ps1 | iex</code></pre>
+              <button class="btn" type="button" data-copy="install-ps">
+                <span data-lang="zh">复制</span><span data-lang="en" lang="en">Copy</span>
+              </button>
+            </div>
+            <p class="note">
+              <span data-lang="zh"
+                >它下载最新版的安装程序，核对 SHA-256，静默装好并打开。PowerShell 下载的文件不带「来自互联网」标记，通常不会被 SmartScreen
+                拦；脚本可以<a href="/install.ps1">先读一遍</a>。</span
+              >
+              <span data-lang="en" lang="en"
+                >It downloads the newest installer, checks its SHA-256, installs it quietly and opens it. A PowerShell download carries
+                no mark of the web, so SmartScreen usually does not stop it. You can
+                <a href="/install.ps1">read the script</a> first.</span
+              >
+            </p>
+          </div>
+
+          <div class="oneliner">
+            <h3>
+              <span data-lang="zh">Windows（cmd）</span>
+              <span data-lang="en" lang="en">Windows (cmd)</span>
+            </h3>
+            <div class="command">
+              <pre><code id="install-cmd">powershell -NoProfile -Command "irm https://jokbet.jokerben.top/install.ps1 | iex"</code></pre>
+              <button class="btn" type="button" data-copy="install-cmd">
+                <span data-lang="zh">复制</span><span data-lang="en" lang="en">Copy</span>
+              </button>
+            </div>
+            <p class="note">
+              <span data-lang="zh">命令提示符里跑的就是同一条 PowerShell 命令，做的事情和上面完全一样。</span>
+              <span data-lang="en" lang="en">The same PowerShell command, for a Command Prompt window; it does exactly what the one above does.</span>
+            </p>
+          </div>
+
+          <h3 class="manual">
+            <span data-lang="zh">手动安装</span><span data-lang="en" lang="en">By hand</span>
+          </h3>
           <div class="platforms">
             <div>
               <h3>macOS</h3>
@@ -226,6 +237,46 @@
             <span data-lang="zh">更新后如果不计数了，在「输入监控」里删掉旧条目再重新添加。</span>
             <span data-lang="en" lang="en">If counting stops after an update, remove the old entry from Input Monitoring and add the app again.</span>
           </p>
+        </section>
+
+        <section class="block" id="installers">
+          <h2><span data-lang="zh">安装包</span><span data-lang="en" lang="en">Installers</span></h2>
+          <div class="release-head" id="release-head" hidden>
+            <span class="version" id="release-version"></span>
+            <span id="release-when"></span>
+            <span id="release-source"></span>
+            <a class="all" href="/changelog"
+              ><span data-lang="zh">所有版本</span><span data-lang="en" lang="en">All versions</span></a
+            >
+          </div>
+          <p class="empty" id="release-empty" aria-live="polite">
+            <span data-lang="zh">正在读取版本信息…</span>
+            <span data-lang="en" lang="en">Reading the current release…</span>
+          </p>
+          <ul class="files" id="files" hidden></ul>
+          <details id="notes-details" hidden>
+            <summary>
+              <span data-lang="zh">这次更新了什么</span><span data-lang="en" lang="en">What changed in this release</span>
+            </summary>
+            <div class="notes" id="notes"></div>
+          </details>
+          <p class="note">
+            <span data-lang="zh"
+              >这些安装包没有 Apple 或微软的签名，直接运行的话第一次打开会被系统拦一下，按上面的手动步骤放行即可——用上面的一行命令装则不会。下载走本站的镜像，镜像不可用时自动改用
+              GitHub。</span
+            >
+            <span data-lang="en" lang="en"
+              >These builds are not signed by Apple or Microsoft, so opening one by hand is stopped once — follow the steps above for that.
+              The one-line installs are not stopped. Downloads come from this site's mirror, and fall back to GitHub when it is
+              unavailable.</span
+            >
+          </p>
+          <noscript>
+            <p class="note">
+              下载列表需要 JavaScript。安装包都在
+              <a href="https://github.com/sparkjokerben/jokbet/releases">GitHub Releases</a>。
+            </p>
+          </noscript>
         </section>
       </main>
 

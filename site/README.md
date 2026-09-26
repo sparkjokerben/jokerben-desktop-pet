@@ -22,7 +22,8 @@ over this directory is in [CONTRIBUTING.md](../CONTRIBUTING.md).
 | `/api/releases.json` | every published release, for `/changelog` | R2 `manifests/releases.json`, else `worker/fallback/releases.json` |
 | `/api/update.json` | the app's updater manifest, its downloads pointed at `/dl/` | R2 `manifests/update.json`, else a redirect to GitHub's |
 | `/dl/<tag>/<name>` | one file of one release | R2 `releases/<tag>/<name>`, else a redirect to GitHub |
-| `/install.sh` | the one-line macOS installer the download page offers | `site/install.sh` |
+| `/install.sh` | the one-line installer for macOS and Linux | `site/install.sh` |
+| `/install.ps1` | the one-line installer for Windows | `site/install.ps1` |
 
 Every release file has one address per host, the same shape on both:
 `/dl/<tag>/<name>` here, `releases/download/<tag>/<name>` on GitHub. The site's
@@ -30,16 +31,29 @@ links, the Worker's fallback and the app's updater all move between the two
 without looking anything up, and a version in the path means an address never
 changes what it serves.
 
-`install.sh` is the way past Gatekeeper. A build a browser downloaded is
-quarantined, and macOS then stops an un-notarized one — a disk image when it is
-opened, the app inside it once more. `curl` marks nothing, so
+The two installers are the way past Gatekeeper and SmartScreen, and the way the
+download page recommends. A build a browser downloaded is quarantined on a Mac
+and marked on Windows, and each system then stops an un-notarized or unsigned
+one — on a Mac a disk image when it is opened and the app inside it once more,
+on Windows the installer itself. `curl` and PowerShell's own download mark
+nothing, so a build installed this way opens straight away.
+
 `curl -fsSL https://jokbet.jokerben.top/install.sh | sh` installs the newest
-release's `aarch64`/`x64` disk image for the Mac it runs on, checks it against
-the manifest's SHA-256, puts it in `/Applications` (or `~/Applications` when
-that is not writable) and opens it. Running it again updates in place: it asks
-the running app to quit the way its own Quit item does, so the counts in hand
-are saved first. The script is served as `text/plain`, so a browser shows it
-rather than saving it, and the download page links to it for reading first.
+release's `aarch64`/`x64` disk image for the Mac it runs on, or the AppImage on
+Linux (into `~/.local/bin/jokbet`), checks it against the manifest's SHA-256 and
+opens it. Running it again updates in place: on a Mac it asks the running app to
+quit the way its own Quit item does, so the counts in hand are saved first.
+`irm https://jokbet.jokerben.top/install.ps1 | iex` does the same on Windows
+with the NSIS installer, run silently (`/S`) — the same way the app's own
+updater runs it, which is what closes a running copy. It needs Windows
+PowerShell 5.1 or PowerShell 7; `iex` of a string is not a script file, so the
+execution policy does not come into it. cmd has no `irm`, so the page gives it
+the one line that calls PowerShell: `powershell -NoProfile -Command "irm … |
+iex"`.
+
+Both are served as `text/plain; charset=utf-8`, so a browser shows them rather
+than saving them, `irm` hands the page's bytes to `iex` with the right charset,
+and the download page links to both for reading first.
 
 Each macOS build also ships as a zip from 0.1.2 on, and that is what the pages
 offer first: a zip is stopped once, a disk image twice. The zip comes from the
@@ -71,7 +85,8 @@ site/
   styles.css             the app's palette, the layout, the pet's own looks
   app.js                 the language switch, the pet, and what each page builds from /api/
   boot.js                picks zh/en before the first paint; forwards the old anchors
-  install.sh             the one-line macOS installer: manifest, checksum, ditto, open
+  install.sh             the one-line installer for macOS and Linux: manifest, checksum, ditto or AppImage, open
+  install.ps1            the one-line installer for Windows: manifest, checksum, the NSIS installer, open
   _headers               security headers (CSP) and cache rules
   _redirects             the .html aliases and the pre-/api/ addresses
   .assetsignore          what lives here but is not published (partials/, this README)
@@ -207,7 +222,9 @@ is not a secret; only the three secret values are.
    workflow: every file of the release goes to `releases/<tag>/`, then the three
    manifests to `manifests/` — `latest.json` and `update.json` only if the
    release is GitHub's latest, so re-publishing an old tag cannot roll anyone
-   back. The site picks them up within a minute.
+   back. `update.json` takes its notes from the release's body, not from the
+   copy Tauri wrote into the draft: those notes are written when the draft is
+   published, and the app shows them. The site picks them up within a minute.
 3. Refresh the fallback copies in the repo and commit them, so the Worker's own
    copies name the same release as the bucket:
 

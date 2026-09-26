@@ -339,6 +339,14 @@ html[data-lang="en"] [data-lang="zh"] {
   gap: 10px;
 }
 
+/* The install line and its lead-in take the whole row, so the buttons for the
+   files themselves sit under them. */
+.cta .note,
+.cta .command {
+  flex: 1 1 100%;
+  margin: 0;
+}
+
 .try {
   margin-top: 36px;
   padding-top: 20px;

@@ -38,8 +38,14 @@
 /assets/wordmark.svg
   Cache-Control: public, max-age=3600
 
-# The installer is meant to be read before it is run, so a browser shows it as
-# text rather than saving it. It changes with the site: a short cache only.
+# The installers are meant to be read before they are run, so a browser shows
+# them as text rather than saving them — and `irm` hands the page's own bytes
+# to `iex`, which needs the charset in the response or the Chinese in it is
+# mojibake. They change with the site: a short cache only.
 /install.sh
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=300
+
+/install.ps1
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=300
